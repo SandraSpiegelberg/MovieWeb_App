@@ -30,9 +30,13 @@ class DataManager():
         return movies
 
 
-    def get_movie_by_id(self, movie_id: int):
+    def get_movie_by_id(self, user_id, movie_id: int):
         """Get a movie by their movie ID."""
-        movie = db.session.get(Movie, movie_id)
+        user = db.session.get(User, user_id)
+        if not user:
+            return None
+
+        movie = next((m for m in user.movies if m.movie_id == movie_id), None)
         return movie
 
 

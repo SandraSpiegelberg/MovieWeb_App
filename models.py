@@ -5,13 +5,6 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 
-user_movie = db.Table(
-    'user_movie',
-    db.Column('user_id', db.Integer, db.ForeignKey('Users.user_id'), primary_key=True),
-    db.Column('movie_id', db.Integer, db.ForeignKey('Movies.movie_id'), primary_key=True)
-)
-
-
 class User(db.Model):
     """Class for objects who represents an user in the db libary.
     """
@@ -20,7 +13,7 @@ class User(db.Model):
     user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_name = db.Column(db.String(100), nullable=False, unique=True)
 
-    movie = db.relationship('Movie', secondary=user_movie, backref='user')
+    movie = db.relationship('Movie', backref='user', lazy=True)
 
 
     def __init__(self, user_name, user_id=None):
@@ -42,7 +35,7 @@ class Movie(db.Model):
     __tablename__ = 'Movies'
 
     __table_args__ = (
-        db.UniqueConstraint('movie_title','director', 'year', name='unique_movie'),
+        db.UniqueConstraint('movie_title','movie_director', 'movie_year', name='unique_movie'),
     )
 
     movie_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -65,10 +58,10 @@ class Movie(db.Model):
 
     def __repr__(self):
         return f'''Movie(movie_id = {self.movie_id}, movie_title = {self.movie_title},
-            director = {self.director}, year = {self.year}, poster_url = {self.poster_url},
-            user_id = {self.user_id})'''
+            director = {self.movie_director}, year = {self.movie_year},
+            poster_url = {self.movie_poster_url}, user_id = {self.user_id})'''
 
 
     def __str__(self):
-        return f'''Movie {self.movie_title} directed by {self.director}
-            in {self.year} with id {self.movie_id}'''
+        return f'''Movie {self.movie_title} directed by {self.movie_director}
+            in {self.movie_year} with id {self.movie_id}'''
