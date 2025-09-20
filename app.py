@@ -1,6 +1,6 @@
 """create the Flask app instance"""
 import os
-from flask import Flask, request
+from flask import Flask, redirect, render_template, request, url_for
 from dotenv import load_dotenv
 import requests
 
@@ -34,14 +34,8 @@ data_manager = DataManager() # Create an object of your DataManager class
 def home():
     """The home page of your application. Show a list of all registered users and 
     a form for adding new users."""
-    return "Welcome to MoviWeb App!"
-
-
-@app.route('/users')
-def list_users():
-    """Page that lists all users"""
     users = data_manager.get_users()
-    return str(users)  # Temporarily returning users as a string
+    return render_template('index.html', users=users)
 
 
 @app.route('/users', methods=['POST'])
@@ -51,16 +45,17 @@ def create_user():
     then redirects back to home page"""
     new_user = request.form.get('name')
     data_manager.add_user(new_user)
-    return f'New user {new_user} is created.'
+    return redirect(url_for('index'))
 
 
 @app.route('/users/<int:user_id>/movies', methods=['GET'])
 def user_movies(user_id):
     """When you click on a user name, the app retrieves that user’s list 
     of favorite movies and displays it."""
-    #user = data_manager.get_user(user_id)
+    user = data_manager.get_user(user_id)
     movies = data_manager.get_movies(user_id)
-    return movies
+    msg= request.args.get('message')
+    return render_template('user.html', user_id=user_id, movies=movies, user=user, message=msg)
 
 
 
@@ -82,8 +77,8 @@ def add_new_movie(user_id):
             movie_director = movie_data['Director']
             movie_poster_url = movie_data['Poster']
             new_movie = Movie(movie_title, movie_director, movie_year, user_id, movie_poster_url)
-            msg = data_manager.add_movie(new_movie)
-            return msg
+            data_manager.add_movie(new_movie)
+            return redirect(url_for('user_movies', user_id=user_id))
     else:
         try:
             return movie_data['Error']
@@ -99,7 +94,7 @@ def update_movie(user_id, movie_id):
     new_title = request.form.get('title')
     data_manager.update_movie(movie_id, new_title)
     msg = f"{old_movie} was updated to {new_title}."
-    return msg
+    return redirect(url_for('user_movies', user_id=user_id, message=msg))
 
 
 @app.route('/users/<int:user_id>/movies/<int:movie_id>/delete', methods=['POST'])
@@ -108,7 +103,7 @@ def delete_movie(user_id, movie_id):
     movie = data_manager.get_movie_by_id(user_id, movie_id)
     data_manager.delete_movie(movie_id)
     msg = f"Movie {movie.movie_title} sucessfully deleted."
-    return msg
+    return redirect(url_for('user_movies', user_id=user_id, message=msg))
 
 
 if __name__ == "__main__":

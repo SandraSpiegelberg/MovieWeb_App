@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>{{ user.user_name }}'s Favorites</h1>
+    {{% if message %}}
+        <h4>{{ message }}</h4>
+    {{% endif %}}
+    <form action="{{ url_for('add_movie', user_id=user.user_id) }}" method="post">
+        <label for="title">New Movie: </label>
+        <input type="text" id="title", name="title" required>
+        <button type="submit">Submit</button>
+    </form>
+    <ul class="user-movies">
+        {% for movie in movies %}
+        <li class="movie">
+            <img class="poster" src="{{ movie.movie_poster_url }}" alt="poster for {{ movie.movie_title }}">
+            <br>
+            <div class="movie-info">
+                <form action="{{ url_for('update_movie', user_id=user.user_id, movie_id=movie.movie_id) }}" method="post">
+                    <input type="text" id="movie-title", name="movie-title", value="{{ movie.movie_title }}" required>
+                    <button type="update">Update</button>
+                </form>
+                <strong>Year: </strong> {{ movie.movie_year }}
+                <br>
+                <strong>Director: </strong> {{ movie.movie_director }}
+                <form action="{{ url_for('delete_movie', user_id=user.user_id, movie_id=movie.movie_id) }}" method="post">
+                    <button type="delete">Delete</button>
+                </form>
+            </div>
+
+        </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
