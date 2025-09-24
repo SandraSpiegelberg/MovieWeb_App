@@ -1,0 +1,162 @@
+:root {
+  --accent: #009688;
+  --accent-dark: #00796b;
+  --accent-light: #4db6ac;
+  --danger: #e53935;
+  --danger-dark: #b71c1c;
+  --bg-light: #f5f5f5;
+  --card-bg: #fff;
+  --text-dark: #333;
+}
+
+body {
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-light);
+  margin: 0;
+  padding: 0;
+  color: var(--text-dark);
+}
+
+/* ---------- Header ---------- */
+header, .navbar {
+  background-color: var(--accent);
+  color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+header a, .navbar a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.3rem;
+}
+
+header a:hover {
+  text-decoration: underline;
+}
+
+.container {
+  max-width: 900px;
+  margin: 2rem auto;
+  background: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(44, 62, 80, 0.08);
+  padding: 2rem;
+}
+
+
+.user-movies, .user-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.movie, .user-entry{
+  background: var(--card-bg);
+  border-radius: 10px;
+  box-shadow: -2px 4px 10px rgba(0, 0, 0, 0.08);
+  padding: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.movie:hover, .user-entry:hover {
+  transform: translateY(-3px);
+  box-shadow: -4px 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+.movie img {
+  border-radius: 6px;
+  max-width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+/* ---------- Buttons ---------- */
+button, .btn {
+  border: none;
+  padding: 0.4em 1em;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s ease;
+}
+
+
+button.normal{
+  background-color: var(--accent);
+  color: white;
+}
+
+button.normal:hover {
+  background-color: var(--accent-dark);
+}
+
+button.delete {
+  background-color: var(--danger);
+  color: white;
+}
+
+button.delete:hover {
+  background-color: var(--danger-dark);
+}
+
+/* ---------- Formular ---------- */
+.add_form {
+  background: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: -2px 4px 10px rgba(0, 0, 0, 0.08);
+  margin: 2rem auto 0 auto;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  max-width: 400px;           
+  width: 100%;                
+  display: block;
+}
+
+.add_form:hover {
+  transform: translateY(-3px);
+  box-shadow: -4px 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+.user-page{
+  padding: 1.5rem;
+  border-radius: 10px;
+  margin: 2rem auto 0 auto;
+  max-width: 100%;           
+  width: 100%;     
+}
+
+.user-entry {
+  max-width: 220px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+input, textarea {
+  font: 1em sans-serif;
+  /* width: 30%; */
+  padding: 0.5em;
+  margin: 0.5em 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+input:focus, textarea:focus {
+  border: 1px solid var(--accent);
+  box-shadow: 0 0 5px rgba(0, 150, 136, 0.4);
+  outline: none;
+}
+
+/* ---------- Footer ---------- */
+footer {
+  background-color: var(--accent);
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  margin-top: 3rem;
+}

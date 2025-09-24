@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>500 - Internal Server Error 😞</h1>
+    <p>Sorry, something went wrong on our end.</p>
+    {% if error %}
+    <p>Error Details: {{ error }}</p>
+    {% endif %}
+    <a href="{{ url_for('home') }}">Go back to Home page</a>
+{% endblock %}

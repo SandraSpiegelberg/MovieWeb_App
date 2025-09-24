@@ -35,7 +35,7 @@ class Movie(db.Model):
     __tablename__ = 'Movies'
 
     __table_args__ = (
-        db.UniqueConstraint('movie_title','movie_director', 'movie_year', name='unique_movie'),
+        db.UniqueConstraint('movie_title', 'movie_director', 'movie_year', name='unique_movie')
     )
 
     movie_id = db.Column(db.Integer, primary_key=True, autoincrement=True)

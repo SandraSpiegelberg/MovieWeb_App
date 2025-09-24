@@ -45,7 +45,7 @@ def create_user():
     then redirects back to home page"""
     new_user = request.form.get('name')
     data_manager.add_user(new_user)
-    return redirect(url_for('index'))
+    return redirect(url_for('home'))
 
 
 @app.route('/users/<int:user_id>/movies', methods=['GET'])
@@ -70,7 +70,9 @@ def add_new_movie(user_id):
     movie_data = res.json()
     if res.status_code == 200:
         if movie_data['Response'] == 'False':
-            return movie_data['Error']
+            msg = f"For movie {title}: "
+            msg += movie_data['Error']
+            return redirect(url_for('user_movies', user_id=user_id, message=msg))
         else:
             movie_title = movie_data['Title']
             movie_year = movie_data['Year']
@@ -104,6 +106,26 @@ def delete_movie(user_id, movie_id):
     data_manager.delete_movie(movie_id)
     msg = f"Movie {movie.movie_title} sucessfully deleted."
     return redirect(url_for('user_movies', user_id=user_id, message=msg))
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    """Handle 404 errors by rendering a custom template."""
+    return render_template('404.html', error=e), 404
+
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    """Handle 500 errors by rendering a custom template."""
+    return render_template('5oo.html', error=e), 500
+
+
+@app.errorhandler(Exception)
+def unhandled_exception(e):
+    """Handle any unhandled exceptions by logging the error and 
+    rendering a custom template."""
+    app.logger.error('Unhandled Exception: %s', e)
+    return render_template('500.html', error=str(e)), 500
 
 
 if __name__ == "__main__":

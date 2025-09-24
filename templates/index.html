@@ -2,21 +2,22 @@
 {% block content %}
 <div class="user-page">
     <h1>Users</h1>
-    <ul class="user-list">
+    <div class="user-list">
         {% for user in users %}
-        <li class="user-entry">
-            <a href="{{ url_for('user_movies', user_id=user.user_id) }}" class="btn">{{ user.user_name }}</a>
-            <form action="{{ url_for('user_movies') }}" method="get">
-                <label for="name">View Movies</label>
-                <button type="submit">View Movies</button>
+        <div class="user-entry">
+            <h3>{{ user.user_name }}</h3>
+            <form action="{{ url_for('user_movies',  user_id=user.user_id) }}" method="get">
+                <button class="normal">View Movies</button>
             </form>
-        </li>
+        </div>
         {% endfor %}
-    </ul>
+    </div>
 </div>
+<div class="add_form">
 <form action="{{ url_for('create_user') }}" method="post">
-    <label for="name">New User: </label>
-    <input type="text" id="name" name="name" required>
-    <button type="submit">Submit</button>
+    <label for="name">Add New User: </label>
+    <input type="text" id="name" name="name" placeholder="User name" required>
+    <button class="normal">Add user</button>
 </form>
+</div>
 {% endblock %}
