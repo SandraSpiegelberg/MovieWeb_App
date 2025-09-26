@@ -26,7 +26,7 @@ class DataManager():
 
     def get_movies(self, user_id: int):
         """Get all movies for a specific user by their user ID."""
-        movies = Movie.query.filter_by(user_id=user_id).all()
+        movies = Movie.query.filter_by(user_id=user_id).all() # or user.movie
         return movies
 
 
