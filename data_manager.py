@@ -36,7 +36,7 @@ class DataManager():
         if not user:
             return None
 
-        movie = next((m for m in user.movies if m.movie_id == movie_id), None)
+        movie = next((m for m in user.movie if m.movie_id == movie_id), None)
         return movie
 
 
