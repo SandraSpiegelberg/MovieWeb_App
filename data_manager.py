@@ -52,10 +52,10 @@ class DataManager():
     def update_movie(self, movie_id, new_title):
         """Update an existing movie's title."""
         movie = db.session.get(Movie, movie_id)
-        if movie:
+        if movie and new_title:
             movie.movie_title = new_title
             db.session.commit()
-            return f'Movie with ID {movie_id} successfully updated to {new_title}!'
+            return movie
         return None
 
     def delete_movie(self, movie_id):

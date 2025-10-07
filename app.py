@@ -30,6 +30,29 @@ db.init_app(app)  # Link the database and the app.
 data_manager = DataManager() # Create an object of your DataManager class
 
 
+def get_movie_info_api(user_id, title):
+    """Gets the OMDb information and return it as a Movie object."""
+    movies_url = f'{API_URL}apikey={API_KEY}&t={title}'
+    res = requests.get(movies_url, timeout=None)
+    movie_data = res.json()
+    if res.status_code == 200:
+        if movie_data['Response'] == 'False':
+            msg = f"For movie {title}: "
+            msg += movie_data['Error']
+            return msg
+        movie_title = movie_data['Title']
+        movie_year = movie_data['Year']
+        movie_director = movie_data['Director']
+        movie_poster_url = movie_data['Poster']
+        movie = Movie(movie_title, movie_director, movie_year, user_id, movie_poster_url)
+        return movie
+    else:
+        try:
+            return movie_data['Error']
+        except requests.exceptions.RequestException as req_err:
+            return f"Error: {res.status_code}, {req_err}"
+
+
 @app.route('/', methods=['GET'])
 def home():
     """The home page of your application. Show a list of all registered users and 
@@ -58,34 +81,17 @@ def user_movies(user_id):
     return render_template('user.html', user_id=user_id, movies=movies, user=user, message=msg)
 
 
-
 @app.route('/users/<int:user_id>/movies', methods=['POST'])
 def add_new_movie(user_id):
     """Adds a new movie to a user's (ID) list of favorite movies. 
     also fetch the OMDb info in the DataManager class."""
     #user = User.query.get(user_id)
     title = request.form.get('title')
-    movies_url = f'{API_URL}apikey={API_KEY}&t={title}'
-    res = requests.get(movies_url, timeout=None)
-    movie_data = res.json()
-    if res.status_code == 200:
-        if movie_data['Response'] == 'False':
-            msg = f"For movie {title}: "
-            msg += movie_data['Error']
-            return redirect(url_for('user_movies', user_id=user_id, message=msg))
-        else:
-            movie_title = movie_data['Title']
-            movie_year = movie_data['Year']
-            movie_director = movie_data['Director']
-            movie_poster_url = movie_data['Poster']
-            new_movie = Movie(movie_title, movie_director, movie_year, user_id, movie_poster_url)
-            data_manager.add_movie(new_movie)
-            return redirect(url_for('user_movies', user_id=user_id))
-    else:
-        try:
-            return movie_data['Error']
-        except requests.exceptions.RequestException as req_err:
-            return f"Error: {res.status_code}, {req_err}"
+    new_movie = get_movie_info_api(user_id, title)
+    if isinstance(new_movie, Movie):
+        data_manager.add_movie(new_movie)
+        return redirect(url_for('user_movies', user_id=user_id))
+    return redirect(url_for('user_movies', user_id=user_id, message=new_movie))
 
 
 @app.route('/users/<int:user_id>/movies/<int:movie_id>/update', methods=['POST'])
@@ -93,9 +99,10 @@ def update_movie(user_id, movie_id):
     """Modify the title of a specific movie in a user’s list, 
     without depending on OMDb for corrections."""
     old_movie = data_manager.get_movie_by_id(user_id, movie_id)
-    new_title = request.form.get('title')
+    old_title = old_movie.movie_title
+    new_title = request.form.get('movie-title')
     data_manager.update_movie(movie_id, new_title)
-    msg = f"{old_movie} was updated to {new_title}."
+    msg = f"Movie with ID {movie_id} successfully updated! {old_title} was updated to {new_title}."
     return redirect(url_for('user_movies', user_id=user_id, message=msg))
 
 
