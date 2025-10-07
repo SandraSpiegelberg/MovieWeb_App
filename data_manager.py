@@ -58,6 +58,7 @@ class DataManager():
             return movie
         return None
 
+
     def delete_movie(self, movie_id):
         """Delete a movie from the database by it's ID."""
         movie = db.session.get(Movie, movie_id)

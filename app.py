@@ -46,11 +46,10 @@ def get_movie_info_api(user_id, title):
         movie_poster_url = movie_data['Poster']
         movie = Movie(movie_title, movie_director, movie_year, user_id, movie_poster_url)
         return movie
-    else:
-        try:
-            return movie_data['Error']
-        except requests.exceptions.RequestException as req_err:
-            return f"Error: {res.status_code}, {req_err}"
+    try:
+        return movie_data['Error']
+    except requests.exceptions.RequestException as req_err:
+        return f"Error: {res.status_code}, {req_err}"
 
 
 @app.route('/', methods=['GET'])
